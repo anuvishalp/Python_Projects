@@ -1,0 +1,2789 @@
+🧮 1. Calculator
+
+✅ Python Version
+
+def calculator(a, b, op):
+    if op == '+': return a + b
+    if op == '-': return a - b
+    if op == '*': return a * b
+    if op == '/': return a / b
+    return "Invalid operator"
+
+print(calculator(10, 5, '+'))
+
+✅ PL/SQL Version
+
+DECLARE
+  a NUMBER := 10;
+  b NUMBER := 5;
+  op VARCHAR2(1) := '+';
+  result NUMBER;
+BEGIN
+  CASE op
+    WHEN '+' THEN result := a + b;
+    WHEN '-' THEN result := a - b;
+    WHEN '*' THEN result := a * b;
+    WHEN '/' THEN result := a / b;
+    ELSE DBMS_OUTPUT.PUT_LINE('Invalid operator');
+  END CASE;
+
+  DBMS_OUTPUT.PUT_LINE('Result: ' || result);
+END;
+/
+
+✅ SQL Version (Using CASE)
+
+SELECT
+  CASE '+'
+    WHEN '+' THEN 10 + 5
+    WHEN '-' THEN 10 - 5
+    WHEN '*' THEN 10 * 5
+    WHEN '/' THEN 10 / 5
+  END AS result
+FROM dual;
+======================================================================
+🔐 2. Password Generator
+
+✅ Python Version
+
+import random
+import string
+
+def generate_password(length=12):
+    chars = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(chars) for _ in range(length))
+
+print(generate_password())
+-----------------------
+✅ PL/SQL Version
+
+DECLARE
+  chars VARCHAR2(200) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  pwd VARCHAR2(50);
+  len NUMBER := 12;
+BEGIN
+  FOR i IN 1..len LOOP
+    pwd := pwd || SUBSTR(chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(chars))), 1);
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Password: ' || pwd);
+END;
+/
+
+❌ SQL Version
+SQL is not suitable for password generation logic — PL/SQL handles it.
+===============================================================
+📝 3. To‑Do App
+
+✅ Python Version
+
+tasks = []
+
+def add_task(t):
+    tasks.append(t)
+
+def list_tasks():
+    for i, t in enumerate(tasks, 1):
+        print(i, t)
+
+add_task("Learn Python")
+add_task("Practice SQL")
+list_tasks()
+---------------------------
+✅ SQL Version (Table + Insert + Select)
+
+CREATE TABLE todo (
+  id NUMBER GENERATED ALWAYS AS IDENTITY,
+  task VARCHAR2(200),
+  status VARCHAR2(20) DEFAULT 'pending'
+);
+
+INSERT INTO todo (task) VALUES ('Learn Python');
+SELECT * FROM todo;
+-----------------------------
+✅ PL/SQL Version
+
+DECLARE
+  v_task VARCHAR2(200) := 'Learn PL/SQL';
+BEGIN
+  INSERT INTO todo(task) VALUES (v_task);
+  COMMIT;
+END;
+/
+===============================================
+🕸️ 4. Web Scraper
+
+✅ Python Version (requests + BeautifulSoup)
+
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://example.com"
+html = requests.get(url).text
+soup = BeautifulSoup(html, "html.parser")
+
+print(soup.title.text)
+
+❌ SQL / PL/SQL-> Not suitable for web scraping.
+================================================
+🌐 5. API‑Based App
+
+✅ Python Version
+
+import requests
+
+response = requests.get("https://api.github.com/users/octocat")
+data = response.json()
+print(data["login"], data["public_repos"])
+
+❌ SQL / PL/SQL -> APIs are not supported directly (unless using UTL_HTTP in PL/SQL).
+-----------------------------
+PL/SQL Version (UTL_HTTP)
+
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  buffer VARCHAR2(4000);
+BEGIN
+  req := UTL_HTTP.begin_request('https://api.github.com/users/octocat');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, buffer, TRUE);
+    DBMS_OUTPUT.PUT_LINE(buffer);
+  END LOOP;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+==============================================
+🎮 6. Simple Game (Snake / Pong)
+
+✅ Python Version (Mini Snake Skeleton)
+
+import turtle
+
+win = turtle.Screen()
+win.title("Snake Game")
+win.bgcolor("black")
+
+head = turtle.Turtle()
+head.shape("square")
+head.color("white")
+head.penup()
+
+while True:
+    head.forward(20)
+
+❌ SQL / PL/SQL -> Games cannot be built in SQL/PLSQL.
+===============================================
+⚙️ Automation Projects
+
+📁 7. Rename Files
+
+✅ Python Version
+
+import os
+
+folder = "C:/temp"
+for i, f in enumerate(os.listdir(folder)):
+    os.rename(os.path.join(folder, f), os.path.join(folder, f"file_{i}.txt"))
+
+======================================================
+📧 8. Send Emails
+
+✅ Python Version
+
+import smtplib
+from email.mime.text import MIMEText
+
+msg = MIMEText("Hello from Python!")
+msg["Subject"] = "Test Email"
+msg["From"] = "you@example.com"
+msg["To"] = "friend@example.com"
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@example.com", "password")
+    server.send_message(msg)
+=======================================================
+📊 9. Process CSV / Excel
+
+✅ Python Version (pandas)
+
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+df["total"] = df["price"] * df["qty"]
+df.to_excel("output.xlsx", index=False)
+--------------------------------
+✅ SQL Version (Load CSV into table)
+
+LOAD DATA INFILE 'data.csv'
+INTO TABLE sales
+FIELDS TERMINATED BY ','
+(price, qty);
+------------------------------
+✅ PL/SQL Version (Process rows)
+
+DECLARE
+  CURSOR c IS SELECT price, qty FROM sales;
+BEGIN
+  FOR r IN c LOOP
+    DBMS_OUTPUT.PUT_LINE('Total: ' || (r.price * r.qty));
+  END LOOP;
+END;
+/
+======================================
+🕷️ 10. Scrape Websites (Automation)
+
+✅ Python Version
+
+import requests
+from bs4 import BeautifulSoup
+
+html = requests.get("https://example.com").text
+soup = BeautifulSoup(html, "html.parser")
+
+for link in soup.find_all("a"):
+    print(link.get("href"))
+
+🧮 CALCULATOR — MULTIPLE SOLUTIONS
+==============================================
+🟦 PYTHON SOLUTION 1 — Basic If/Else Calculator
+python
+a = float(input("Enter first number: "))
+b = float(input("Enter second number: "))
+op = input("Enter operator (+ - * /): ")
+
+if op == '+':
+    print(a + b)
+elif op == '-':
+    print(a - b)
+elif op == '*':
+    print(a * b)
+elif op == '/':
+    print(a / b)
+else:
+    print("Invalid operator")
+================================================
+🟦 PYTHON SOLUTION 2 — Using Functions
+python
+def calc(a, b, op):
+    if op == '+': return a + b
+    if op == '-': return a - b
+    if op == '*': return a * b
+    if op == '/': return a / b
+    return "Invalid operator"
+
+print(calc(10, 5, '+'))
+===============================================
+🟦 PYTHON SOLUTION 3 — Dictionary‑Based Calculator
+Elegant, scalable, interview‑friendly.
+
+python
+operations = {
+    '+': lambda a, b: a + b,
+    '-': lambda a, b: a - b,
+    '*': lambda a, b: a * b,
+    '/': lambda a, b: a / b
+}
+
+a = 10
+b = 5
+op = '*'
+
+print(operations[op](a, b))
+================================================
+🟦 PYTHON SOLUTION 4 — OOP Calculator
+python
+class Calculator:
+    def add(self, a, b): return a + b
+    def sub(self, a, b): return a - b
+    def mul(self, a, b): return a * b
+    def div(self, a, b): return a / b
+
+c = Calculator()
+print(c.mul(10, 5))
+================================================
+🟦 PYTHON SOLUTION 5 — GUI Calculator (Tkinter)
+python
+import tkinter as tk
+
+def calculate():
+    result.set(eval(entry.get()))
+
+root = tk.Tk()
+root.title("Calculator")
+
+entry = tk.Entry(root, width=20)
+entry.pack()
+
+result = tk.StringVar()
+tk.Label(root, textvariable=result).pack()
+
+tk.Button(root, text="Calculate", command=calculate).pack()
+
+root.mainloop()
+============================================
+🟧 SQL SOLUTION 1 — Using CASE
+SQL is not meant for calculators, but you can simulate one.
+
+sql
+SELECT
+  CASE '+'
+    WHEN '+' THEN 10 + 5
+    WHEN '-' THEN 10 - 5
+    WHEN '*' THEN 10 * 5
+    WHEN '/' THEN 10 / 5
+  END AS result
+FROM dual;
+================================================
+🟧 SQL SOLUTION 2 — Calculator Table + Operation
+sql
+WITH input AS (
+  SELECT 10 AS a, 5 AS b, '+' AS op FROM dual
+)
+SELECT
+  CASE op
+    WHEN '+' THEN a + b
+    WHEN '-' THEN a - b
+    WHEN '*' THEN a * b
+    WHEN '/' THEN a / b
+  END AS result
+FROM input;
+==============================================
+🟥 PL/SQL SOLUTION 1 — Basic Calculator
+sql
+DECLARE
+  a NUMBER := 10;
+  b NUMBER := 5;
+  op VARCHAR2(1) := '+';
+  result NUMBER;
+BEGIN
+  CASE op
+    WHEN '+' THEN result := a + b;
+    WHEN '-' THEN result := a - b;
+    WHEN '*' THEN result := a * b;
+    WHEN '/' THEN result := a / b;
+    ELSE DBMS_OUTPUT.PUT_LINE('Invalid operator');
+  END CASE;
+
+  DBMS_OUTPUT.PUT_LINE('Result: ' || result);
+END;
+/
+==================================================
+🟥 PL/SQL SOLUTION 2 — Calculator Procedure
+sql
+CREATE OR REPLACE PROCEDURE calc(a NUMBER, b NUMBER, op VARCHAR2) AS
+  result NUMBER;
+BEGIN
+  CASE op
+    WHEN '+' THEN result := a + b;
+    WHEN '-' THEN result := a - b;
+    WHEN '*' THEN result := a * b;
+    WHEN '/' THEN result := a / b;
+  END CASE;
+
+  DBMS_OUTPUT.PUT_LINE('Result: ' || result);
+END;
+/
+
+BEGIN
+  calc(20, 4, '/');
+END;
+/
+=================================================
+🟥 PL/SQL SOLUTION 3 — Function Returning Result
+sql
+CREATE OR REPLACE FUNCTION calculator(a NUMBER, b NUMBER, op VARCHAR2)
+RETURN NUMBER AS
+BEGIN
+  CASE op
+    WHEN '+' THEN RETURN a + b;
+    WHEN '-' THEN RETURN a - b;
+    WHEN '*' THEN RETURN a * b;
+    WHEN '/' THEN RETURN a / b;
+  END CASE;
+END;
+/
+
+SELECT calculator(8, 2, '*') FROM dual;
+
+
+🟦 PYTHON SOLUTION 5 — CLI Menu‑Driven Calculator
+python
+def menu():
+    print("1. Add\n2. Subtract\n3. Multiply\n4. Divide")
+    choice = int(input("Choose: "))
+    a = float(input("A: "))
+    b = float(input("B: "))
+
+    if choice == 1: print(a + b)
+    elif choice == 2: print(a - b)
+    elif choice == 3: print(a * b)
+    elif choice == 4: print(a / b)
+
+menu()
+
+🟦 PYTHON SOLUTION 6 — Exception‑Handled Calculator
+python
+try:
+    a = float(input("A: "))
+    b = float(input("B: "))
+    op = input("Op: ")
+
+    result = eval(f"{a}{op}{b}")
+    print(result)
+
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+except:
+    print("Invalid input")
+
+🔐 PASSWORD GENERATOR — MULTIPLE SOLUTIONS
+
+🟦 PYTHON SOLUTION 1 — Basic Random Password
+python
+import random
+import string
+
+chars = string.ascii_letters + string.digits + string.punctuation
+password = ''.join(random.choice(chars) for _ in range(12))
+print(password)
+
+🟦 PYTHON SOLUTION 2 — Function‑Based Password Generator
+python
+import random
+import string
+
+def generate_password(length=12):
+    chars = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(chars) for _ in range(length))
+
+print(generate_password(16))
+
+🟦 PYTHON SOLUTION 3 — Secure Password (secrets module)
+Best for production‑grade security.
+
+python
+import secrets
+import string
+
+def secure_password(length=12):
+    chars = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(secrets.choice(chars) for _ in range(length))
+
+print(secure_password(20))
+🟦 PYTHON SOLUTION 4 — Password with Rules (uppercase, digits, symbols)
+python
+import random
+import string
+
+def strong_password(length=12):
+    if length < 4:
+        return "Length too short"
+
+    password = [
+        random.choice(string.ascii_uppercase),
+        random.choice(string.ascii_lowercase),
+        random.choice(string.digits),
+        random.choice(string.punctuation)
+    ]
+
+    chars = string.ascii_letters + string.digits + string.punctuation
+    password += [random.choice(chars) for _ in range(length - 4)]
+    random.shuffle(password)
+    return ''.join(password)
+
+print(strong_password(12))
+🟥 PL/SQL SOLUTION 1 — Basic Password Generator
+sql
+DECLARE
+  chars VARCHAR2(200) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  pwd VARCHAR2(50);
+  len NUMBER := 12;
+BEGIN
+  FOR i IN 1..len LOOP
+    pwd := pwd || SUBSTR(chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(chars))), 1);
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Password: ' || pwd);
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Password Generator Function
+sql
+CREATE OR REPLACE FUNCTION generate_password(len NUMBER)
+RETURN VARCHAR2 AS
+  chars VARCHAR2(200) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  pwd VARCHAR2(200);
+BEGIN
+  FOR i IN 1..len LOOP
+    pwd := pwd || SUBSTR(chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(chars))), 1);
+  END LOOP;
+  RETURN pwd;
+END;
+/
+
+SELECT generate_password(15) FROM dual;
+🟥 PL/SQL SOLUTION 3 — Strong Password with Uppercase, Lowercase, Digits
+sql
+DECLARE
+  upper_chars VARCHAR2(50) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  lower_chars VARCHAR2(50) := 'abcdefghijklmnopqrstuvwxyz';
+  digits      VARCHAR2(20) := '0123456789';
+  symbols     VARCHAR2(20) := '!@#$%^&*';
+  pwd VARCHAR2(200);
+BEGIN
+  pwd :=
+    SUBSTR(upper_chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(upper_chars))), 1) ||
+    SUBSTR(lower_chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(lower_chars))), 1) ||
+    SUBSTR(digits,      TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(digits))), 1) ||
+    SUBSTR(symbols,     TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(symbols))), 1);
+
+  DBMS_OUTPUT.PUT_LINE('Strong Password: ' || pwd);
+END;
+/
+🟧 SQL SOLUTION 1 — Random String Using DBMS_RANDOM
+(SQL alone cannot generate complex passwords, but Oracle SQL can call DBMS_RANDOM.)
+
+sql
+SELECT
+  SUBSTR(
+    DBMS_RANDOM.STRING('X', 12),
+    1, 12
+  ) AS password
+FROM dual;
+🟧 SQL SOLUTION 2 — Random Alphanumeric Password
+sql
+SELECT DBMS_RANDOM.STRING('A', 10) AS password FROM dual;
+🟧 SQL SOLUTION 3 — Combined Random Characters
+sql
+SELECT
+  DBMS_RANDOM.STRING('U', 4) ||   -- uppercase
+  DBMS_RANDOM.STRING('L', 4) ||   -- lowercase
+  DBMS_RANDOM.STRING('X', 4)      -- mixed
+  AS password
+FROM dual;
+
+📝 TO‑DO APP — MULTIPLE SOLUTIONS PACK
+🟦 PYTHON SOLUTION 1 — Basic List‑Based To‑Do App
+python
+tasks = []
+
+def add_task(task):
+    tasks.append(task)
+
+def show_tasks():
+    for i, t in enumerate(tasks, 1):
+        print(i, t)
+
+add_task("Learn Python")
+add_task("Practice SQL")
+show_tasks()
+🟦 PYTHON SOLUTION 2 — Menu‑Driven CLI App
+python
+tasks = []
+
+while True:
+    print("\n1. Add Task\n2. View Tasks\n3. Exit")
+    choice = input("Choose: ")
+
+    if choice == "1":
+        tasks.append(input("Enter task: "))
+    elif choice == "2":
+        for i, t in enumerate(tasks, 1):
+            print(i, t)
+    elif choice == "3":
+        break
+🟦 PYTHON SOLUTION 3 — File‑Based To‑Do App (Persistent Storage)
+python
+def add_task(task):
+    with open("tasks.txt", "a") as f:
+        f.write(task + "\n")
+
+def show_tasks():
+    with open("tasks.txt", "r") as f:
+        print(f.read())
+
+add_task("Buy groceries")
+show_tasks()
+🟦 PYTHON SOLUTION 4 — OOP To‑Do App
+python
+class ToDo:
+    def __init__(self):
+        self.tasks = []
+
+    def add(self, task):
+        self.tasks.append(task)
+
+    def show(self):
+        for i, t in enumerate(self.tasks, 1):
+            print(i, t)
+
+todo = ToDo()
+todo.add("Finish project")
+todo.show()
+🟦 PYTHON SOLUTION 5 — JSON‑Based To‑Do App (Structured Storage)
+python
+import json
+
+def load_tasks():
+    try:
+        return json.load(open("tasks.json"))
+    except:
+        return []
+
+def save_tasks(tasks):
+    json.dump(tasks, open("tasks.json", "w"), indent=2)
+
+tasks = load_tasks()
+tasks.append("Learn APIs")
+save_tasks(tasks)
+print(tasks)
+🟦 PYTHON SOLUTION 6 — SQLite Database To‑Do App
+python
+import sqlite3
+
+con = sqlite3.connect("todo.db")
+cur = con.cursor()
+
+cur.execute("CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY, task TEXT)")
+cur.execute("INSERT INTO tasks(task) VALUES('Learn Python')")
+con.commit()
+
+for row in cur.execute("SELECT * FROM tasks"):
+    print(row)
+🟧 SQL SOLUTION 1 — Create To‑Do Table
+sql
+CREATE TABLE todo (
+  id NUMBER GENERATED ALWAYS AS IDENTITY,
+  task VARCHAR2(200),
+  status VARCHAR2(20) DEFAULT 'pending'
+);
+🟧 SQL SOLUTION 2 — Insert Tasks
+sql
+INSERT INTO todo (task) VALUES ('Learn Python');
+INSERT INTO todo (task) VALUES ('Practice SQL');
+🟧 SQL SOLUTION 3 — View Tasks
+sql
+SELECT id, task, status FROM todo;
+🟧 SQL SOLUTION 4 — Mark Task as Completed
+sql
+UPDATE todo SET status = 'done' WHERE id = 1;
+🟥 PL/SQL SOLUTION 1 — Add Task Procedure
+sql
+CREATE OR REPLACE PROCEDURE add_task(p_task VARCHAR2) AS
+BEGIN
+  INSERT INTO todo(task) VALUES (p_task);
+  COMMIT;
+END;
+/
+
+BEGIN
+  add_task('Learn PL/SQL');
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Show Tasks
+sql
+DECLARE
+  CURSOR c IS SELECT id, task, status FROM todo;
+BEGIN
+  FOR r IN c LOOP
+    DBMS_OUTPUT.PUT_LINE(r.id || ' - ' || r.task || ' (' || r.status || ')');
+  END LOOP;
+END;
+/
+🟥 PL/SQL SOLUTION 3 — Mark Task as Done
+sql
+CREATE OR REPLACE PROCEDURE complete_task(p_id NUMBER) AS
+BEGIN
+  UPDATE todo SET status = 'done' WHERE id = p_id;
+  COMMIT;
+END;
+/
+
+BEGIN
+  complete_task(1);
+END;
+/
+🟥 PL/SQL SOLUTION 4 — Delete Task
+sql
+CREATE OR REPLACE PROCEDURE delete_task(p_id NUMBER) AS
+BEGIN
+  DELETE FROM todo WHERE id = p_id;
+  COMMIT;
+END;
+/
+
+🕸️ WEB SCRAPER — MULTIPLE SOLUTIONS PACK
+🟦 PYTHON SOLUTION 1 — Basic Web Scraper (requests + BeautifulSoup)
+Perfect for simple HTML pages.
+
+python
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://example.com"
+html = requests.get(url).text
+soup = BeautifulSoup(html, "html.parser")
+
+print(soup.title.text)
+🟦 PYTHON SOLUTION 2 — Scrape All Links
+python
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://example.com"
+soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+for link in soup.find_all("a"):
+    print(link.get("href"))
+🟦 PYTHON SOLUTION 3 — Scrape Table Data
+python
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://example.com/table"
+soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+rows = soup.find_all("tr")
+for row in rows:
+    cols = [c.text.strip() for c in row.find_all("td")]
+    print(cols)
+🟦 PYTHON SOLUTION 4 — Scraper with Error Handling
+python
+import requests
+from bs4 import BeautifulSoup
+
+try:
+    response = requests.get("https://example.com", timeout=5)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
+    print(soup.title.text)
+except Exception as e:
+    print("Error:", e)
+🟦 PYTHON SOLUTION 5 — Scrape Dynamic Content (Selenium)
+For JavaScript‑heavy sites.
+
+python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Chrome(options=options)
+
+driver.get("https://example.com")
+print(driver.title)
+
+driver.quit()
+🟦 PYTHON SOLUTION 6 — Scrape API‑like JSON Data
+python
+import requests
+
+data = requests.get("https://jsonplaceholder.typicode.com/posts").json()
+for item in data[:5]:
+    print(item["title"])
+🟦 PYTHON SOLUTION 7 — Scraper with Pagination
+python
+import requests
+from bs4 import BeautifulSoup
+
+for page in range(1, 6):
+    url = f"https://example.com/products?page={page}"
+    soup = BeautifulSoup(requests.get(url).text, "html.parser")
+    print("Page:", page)
+    for item in soup.select(".product-title"):
+        print(item.text)
+🟦 PYTHON SOLUTION 8 — Save Scraped Data to CSV
+python
+import requests, csv
+from bs4 import BeautifulSoup
+
+url = "https://example.com"
+soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+with open("output.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["Title"])
+
+    for h in soup.find_all("h2"):
+        writer.writerow([h.text])
+🟦 PYTHON SOLUTION 9 — Scraper with User‑Agent (Avoid Blocking)
+python
+import requests
+from bs4 import BeautifulSoup
+
+headers = {"User-Agent": "Mozilla/5.0"}
+html = requests.get("https://example.com", headers=headers).text
+soup = BeautifulSoup(html, "html.parser")
+
+print(soup.title.text)
+🟧 SQL SOLUTION PACK (LIMITED)
+SQL cannot scrape websites directly.
+But Oracle SQL can consume URLs using UTL_HTTP (technically PL/SQL).
+
+So SQL‑only solutions are not possible — but here are SQL‑adjacent patterns.
+
+🟥 PL/SQL SOLUTION 1 — Fetch HTML from a URL
+sql
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  line VARCHAR2(4000);
+BEGIN
+  req := UTL_HTTP.begin_request('https://example.com');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, line, TRUE);
+    DBMS_OUTPUT.PUT_LINE(line);
+  END LOOP;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Store Scraped HTML into a Table
+sql
+CREATE TABLE scraped_html (content CLOB);
+
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  line VARCHAR2(4000);
+  full CLOB := EMPTY_CLOB();
+BEGIN
+  req := UTL_HTTP.begin_request('https://example.com');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, line, TRUE);
+    full := full || line || CHR(10);
+  END LOOP;
+
+  INSERT INTO scraped_html VALUES (full);
+  COMMIT;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL SOLUTION 3 — Extract Specific Tag (Very Basic Parsing)
+PL/SQL is not meant for HTML parsing, but you can extract simple patterns.
+
+sql
+DECLARE
+  html CLOB;
+  start_pos NUMBER;
+  end_pos NUMBER;
+  title VARCHAR2(500);
+BEGIN
+  SELECT content INTO html FROM scraped_html WHERE ROWNUM = 1;
+
+  start_pos := INSTR(html, '<title>') + 7;
+  end_pos   := INSTR(html, '</title>');
+
+  title := SUBSTR(html, start_pos, end_pos - start_pos);
+
+  DBMS_OUTPUT.PUT_LINE('Title: ' || title);
+END;
+/
+
+🌐 API‑BASED APP — MULTIPLE SOLUTIONS PACK
+🟦 PYTHON SOLUTION 1 — Basic GET API Call
+Perfect for beginners.
+
+python
+import requests
+
+response = requests.get("https://api.github.com/users/octocat")
+data = response.json()
+
+print(data["login"], data["public_repos"])
+🟦 PYTHON SOLUTION 2 — API With Query Parameters
+python
+import requests
+
+url = "https://api.agify.io"
+params = {"name": "anu"}
+
+response = requests.get(url, params=params)
+print(response.json())
+🟦 PYTHON SOLUTION 3 — API With Headers (Auth Token)
+python
+import requests
+
+url = "https://api.example.com/data"
+headers = {"Authorization": "Bearer YOUR_TOKEN"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+🟦 PYTHON SOLUTION 4 — POST API Request
+python
+import requests
+
+payload = {"name": "Anu", "role": "developer"}
+response = requests.post("https://httpbin.org/post", json=payload)
+
+print(response.json())
+🟦 PYTHON SOLUTION 5 — API Wrapper Function
+Reusable in any project.
+
+python
+import requests
+
+def call_api(url, params=None):
+    response = requests.get(url, params=params)
+    return response.json()
+
+print(call_api("https://api.agify.io", {"name": "anu"}))
+🟦 PYTHON SOLUTION 6 — API Client Class (OOP)
+python
+import requests
+
+class APIClient:
+    def __init__(self, base_url):
+        self.base_url = base_url
+
+    def get(self, endpoint):
+        return requests.get(self.base_url + endpoint).json()
+
+client = APIClient("https://api.github.com")
+print(client.get("/users/octocat"))
+🟦 PYTHON SOLUTION 7 — Error‑Handled API Client
+python
+import requests
+
+def safe_api_call(url):
+    try:
+        r = requests.get(url, timeout=5)
+        r.raise_for_status()
+        return r.json()
+    except Exception as e:
+        return {"error": str(e)}
+
+print(safe_api_call("https://api.github.com/users/octocat"))
+🟦 PYTHON SOLUTION 8 — Save API Response to File
+python
+import requests, json
+
+data = requests.get("https://api.github.com/users/octocat").json()
+
+with open("user.json", "w") as f:
+    json.dump(data, f, indent=2)
+🟦 PYTHON SOLUTION 9 — API Pagination
+python
+import requests
+
+page = 1
+while True:
+    url = f"https://api.example.com/items?page={page}"
+    data = requests.get(url).json()
+
+    if not data["items"]:
+        break
+
+    print("Page:", page, "Items:", len(data["items"]))
+    page += 1
+🟧 SQL SOLUTION PACK (LIMITED)
+SQL cannot call APIs directly.
+But Oracle SQL can consume URLs using PL/SQL’s UTL_HTTP.
+
+So SQL‑only API solutions are not possible.
+
+🟥 PL/SQL SOLUTION 1 — Basic API GET Request
+sql
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  line VARCHAR2(4000);
+BEGIN
+  req := UTL_HTTP.begin_request('https://api.github.com/users/octocat');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, line, TRUE);
+    DBMS_OUTPUT.PUT_LINE(line);
+  END LOOP;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Store API Response in a Table
+sql
+CREATE TABLE api_data (content CLOB);
+
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  buffer VARCHAR2(4000);
+  full CLOB := EMPTY_CLOB();
+BEGIN
+  req := UTL_HTTP.begin_request('https://api.github.com/users/octocat');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, buffer, TRUE);
+    full := full || buffer || CHR(10);
+  END LOOP;
+
+  INSERT INTO api_data VALUES (full);
+  COMMIT;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL SOLUTION 3 — API Wrapper Function
+sql
+CREATE OR REPLACE FUNCTION call_api(url VARCHAR2)
+RETURN CLOB AS
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  buffer VARCHAR2(4000);
+  result CLOB := EMPTY_CLOB();
+BEGIN
+  req := UTL_HTTP.begin_request(url);
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, buffer, TRUE);
+    result := result || buffer || CHR(10);
+  END LOOP;
+
+  UTL_HTTP.end_response(resp);
+  RETURN result;
+END;
+/
+
+SELECT call_api('https://api.github.com/users/octocat') FROM dual;
+
+🎮 SIMPLE GAME PACK — SNAKE + PONG
+🐍 SNAKE GAME — MULTIPLE PYTHON SOLUTIONS
+🟦 PYTHON SNAKE — Solution 1: Minimal Snake Skeleton
+A tiny version to understand the loop.
+
+python
+import turtle
+import time
+
+win = turtle.Screen()
+win.title("Snake Game")
+win.bgcolor("black")
+win.setup(width=600, height=600)
+
+head = turtle.Turtle()
+head.shape("square")
+head.color("white")
+head.penup()
+head.speed(0)
+
+direction = "stop"
+
+def move():
+    if direction == "up":
+        head.sety(head.ycor() + 20)
+    if direction == "down":
+        head.sety(head.ycor() - 20)
+    if direction == "left":
+        head.setx(head.xcor() - 20)
+    if direction == "right":
+        head.setx(head.xcor() + 20)
+
+while True:
+    win.update()
+    move()
+    time.sleep(0.1)
+🟦 PYTHON SNAKE — Solution 2: Full Snake Game (Classic Version)
+python
+import turtle
+import time
+import random
+
+delay = 0.1
+score = 0
+
+win = turtle.Screen()
+win.title("Snake Game")
+win.bgcolor("black")
+win.setup(width=600, height=600)
+win.tracer(0)
+
+head = turtle.Turtle()
+head.shape("square")
+head.color("white")
+head.penup()
+head.direction = "stop"
+
+food = turtle.Turtle()
+food.shape("circle")
+food.color("red")
+food.penup()
+food.goto(0, 100)
+
+segments = []
+
+def go_up(): head.direction = "up"
+def go_down(): head.direction = "down"
+def go_left(): head.direction = "left"
+def go_right(): head.direction = "right"
+
+win.listen()
+win.onkeypress(go_up, "Up")
+win.onkeypress(go_down, "Down")
+win.onkeypress(go_left, "Left")
+win.onkeypress(go_right, "Right")
+
+def move():
+    if head.direction == "up":
+        head.sety(head.ycor() + 20)
+    if head.direction == "down":
+        head.sety(head.ycor() - 20)
+    if head.direction == "left":
+        head.setx(head.xcor() - 20)
+    if head.direction == "right":
+        head.setx(head.xcor() + 20)
+
+while True:
+    win.update()
+
+    if head.distance(food) < 20:
+        x = random.randint(-280, 280)
+        y = random.randint(-280, 280)
+        food.goto(x, y)
+
+        new_segment = turtle.Turtle()
+        new_segment.shape("square")
+        new_segment.color("grey")
+        new_segment.penup()
+        segments.append(new_segment)
+
+    for i in range(len(segments)-1, 0, -1):
+        segments[i].goto(segments[i-1].pos())
+
+    if segments:
+        segments[0].goto(head.pos())
+
+    move()
+    time.sleep(delay)
+🟦 PYTHON SNAKE — Solution 3: OOP Snake Game
+A clean, interview‑friendly architecture.
+
+python
+import turtle
+import time
+
+class Snake:
+    def __init__(self):
+        self.segments = []
+        self.create_snake()
+
+    def create_snake(self):
+        for _ in range(3):
+            seg = turtle.Turtle("square")
+            seg.color("white")
+            seg.penup()
+            self.segments.append(seg)
+
+    def move(self):
+        for i in range(len(self.segments)-1, 0, -1):
+            self.segments[i].goto(self.segments[i-1].pos())
+        self.segments[0].forward(20)
+
+snake = Snake()
+
+while True:
+    snake.move()
+    time.sleep(0.1)
+🟦 PYTHON SNAKE — Solution 4: Modular Snake (Multiple Files)
+snake.py, food.py, main.py
+This is perfect for portfolio projects.
+
+If you want, I can generate the full multi‑file version too.
+
+🏓 PONG GAME — MULTIPLE PYTHON SOLUTIONS
+🟦 PYTHON PONG — Solution 1: Basic Pong Game
+python
+import turtle
+
+win = turtle.Screen()
+win.title("Pong")
+win.bgcolor("black")
+win.setup(width=800, height=600)
+
+p1 = turtle.Turtle()
+p1.speed(0)
+p1.shape("square")
+p1.color("white")
+p1.shapesize(stretch_wid=5, stretch_len=1)
+p1.penup()
+p1.goto(-350, 0)
+
+p2 = turtle.Turtle()
+p2.speed(0)
+p2.shape("square")
+p2.color("white")
+p2.shapesize(stretch_wid=5, stretch_len=1)
+p2.penup()
+p2.goto(350, 0)
+
+ball = turtle.Turtle()
+ball.shape("circle")
+ball.color("white")
+ball.penup()
+ball.dx = 2
+ball.dy = 2
+
+def p1_up(): p1.sety(p1.ycor() + 20)
+def p1_down(): p1.sety(p1.ycor() - 20)
+
+def p2_up(): p2.sety(p2.ycor() + 20)
+def p2_down(): p2.sety(p2.ycor() - 20)
+
+win.listen()
+win.onkeypress(p1_up, "w")
+win.onkeypress(p1_down, "s")
+win.onkeypress(p2_up, "Up")
+win.onkeypress(p2_down, "Down")
+
+while True:
+    win.update()
+
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+    if ball.ycor() > 290 or ball.ycor() < -290:
+        ball.dy *= -1
+
+    if ball.xcor() > 390 or ball.xcor() < -390:
+        ball.goto(0, 0)
+        ball.dx *= -1
+🟦 PYTHON PONG — Solution 2: OOP Pong Game
+python
+import turtle
+
+class Paddle(turtle.Turtle):
+    def __init__(self, x):
+        super().__init__()
+        self.shape("square")
+        self.color("white")
+        self.shapesize(stretch_wid=5, stretch_len=1)
+        self.penup()
+        self.goto(x, 0)
+
+    def up(self): self.sety(self.ycor() + 20)
+    def down(self): self.sety(self.ycor() - 20)
+
+p1 = Paddle(-350)
+p2 = Paddle(350)
+🟦 PYTHON PONG — Solution 3: Modular Pong (Multiple Files)
+Just like Snake, I can generate a multi‑file version if you want.
+
+🟥 SQL / PL/SQL SOLUTIONS (LIMITED)
+Games cannot be built in SQL or PL/SQL.
+
+But here are logic simulations you can use for interview practice.
+
+🟥 PL/SQL — Simulate Ball Movement (Logic Only)
+sql
+DECLARE
+  x NUMBER := 0;
+  y NUMBER := 0;
+  dx NUMBER := 2;
+  dy NUMBER := 2;
+BEGIN
+  FOR i IN 1..10 LOOP
+    x := x + dx;
+    y := y + dy;
+
+    IF y > 290 OR y < -290 THEN
+      dy := -dy;
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Ball at: ' || x || ', ' || y);
+  END LOOP;
+END;
+/
+🟥 SQL — Simulate Scoreboard
+sql
+CREATE TABLE pong_score (
+  player VARCHAR2(10),
+  score NUMBER
+);
+
+INSERT INTO pong_score VALUES ('P1', 0);
+INSERT INTO pong_score VALUES ('P2', 0);
+
+🗂️ AUTOMATION SCRIPT PACK — RENAME FILES
+🟦 PYTHON SOLUTION 1 — Basic Rename All Files in a Folder
+python
+import os
+
+folder = "C:/temp"
+
+for i, filename in enumerate(os.listdir(folder), start=1):
+    old = os.path.join(folder, filename)
+    new = os.path.join(folder, f"file_{i}.txt")
+    os.rename(old, new)
+🟦 PYTHON SOLUTION 2 — Rename Files by Adding a Prefix
+python
+import os
+
+folder = "C:/temp"
+prefix = "anu_"
+
+for filename in os.listdir(folder):
+    old = os.path.join(folder, filename)
+    new = os.path.join(folder, prefix + filename)
+    os.rename(old, new)
+🟦 PYTHON SOLUTION 3 — Rename Files by Changing Extension
+python
+import os
+
+folder = "C:/temp"
+
+for filename in os.listdir(folder):
+    if filename.endswith(".txt"):
+        old = os.path.join(folder, filename)
+        new = os.path.join(folder, filename.replace(".txt", ".log"))
+        os.rename(old, new)
+🟦 PYTHON SOLUTION 4 — Rename Using Regex (Clean Filenames)
+python
+import os, re
+
+folder = "C:/temp"
+
+for filename in os.listdir(folder):
+    clean = re.sub(r'[^A-Za-z0-9_.-]', '_', filename)
+    os.rename(os.path.join(folder, filename), os.path.join(folder, clean))
+🟦 PYTHON SOLUTION 5 — Rename Files with Timestamp
+python
+import os
+from datetime import datetime
+
+folder = "C:/temp"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+for i, filename in enumerate(os.listdir(folder), start=1):
+    ext = filename.split(".")[-1]
+    new_name = f"{timestamp}_{i}.{ext}"
+    os.rename(os.path.join(folder, filename), os.path.join(folder, new_name))
+🟦 PYTHON SOLUTION 6 — Rename Only Specific File Types
+python
+import os
+
+folder = "C:/temp"
+
+for filename in os.listdir(folder):
+    if filename.endswith(".jpg"):
+        new = "image_" + filename
+        os.rename(os.path.join(folder, filename), os.path.join(folder, new))
+🟦 PYTHON SOLUTION 7 — Bulk Rename with Mapping (CSV Driven)
+Useful for enterprise automation.
+
+mapping.csv
+
+Code
+old,new
+file1.txt,report1.txt
+file2.txt,report2.txt
+script
+
+python
+import os, csv
+
+folder = "C:/temp"
+
+with open("mapping.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        old = os.path.join(folder, row["old"])
+        new = os.path.join(folder, row["new"])
+        if os.path.exists(old):
+            os.rename(old, new)
+🟦 PYTHON SOLUTION 8 — Recursive Rename (Subfolders Included)
+python
+import os
+
+root = "C:/temp"
+
+for path, dirs, files in os.walk(root):
+    for filename in files:
+        old = os.path.join(path, filename)
+        new = os.path.join(path, "renamed_" + filename)
+        os.rename(old, new)
+🟧 SQL & PL/SQL SOLUTION PACK (LIMITED)
+SQL and PL/SQL cannot rename files on the OS for security reasons.
+
+But here are safe alternatives you can use in enterprise environments.
+
+🟥 PL/SQL SOLUTION 1 — Log File Names (Instead of Renaming)
+sql
+CREATE TABLE file_log (
+  filename VARCHAR2(200),
+  log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+🟥 PL/SQL SOLUTION 2 — Store File Metadata
+sql
+INSERT INTO file_log (filename) VALUES ('report1.txt');
+🟥 PL/SQL SOLUTION 3 — Generate New Names (Logic Only)
+sql
+DECLARE
+  old_name VARCHAR2(100) := 'file1.txt';
+  new_name VARCHAR2(100);
+BEGIN
+  new_name := 'renamed_' || old_name;
+  DBMS_OUTPUT.PUT_LINE('New name: ' || new_name);
+END;
+/
+
+📧 AUTOMATION SCRIPT PACK — SEND EMAILS
+🟦 PYTHON SOLUTION 1 — Basic Email (SMTP + Gmail)
+python
+import smtplib
+from email.mime.text import MIMEText
+
+msg = MIMEText("Hello from Python!")
+msg["Subject"] = "Test Email"
+msg["From"] = "you@gmail.com"
+msg["To"] = "friend@example.com"
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@gmail.com", "your_app_password")
+    server.send_message(msg)
+🟦 PYTHON SOLUTION 2 — Send HTML Email
+python
+import smtplib
+from email.mime.text import MIMEText
+
+html = """
+<h2>Hello Anu!</h2>
+<p>This is an <b>HTML email</b> sent from Python.</p>
+"""
+
+msg = MIMEText(html, "html")
+msg["Subject"] = "HTML Email"
+msg["From"] = "you@gmail.com"
+msg["To"] = "friend@example.com"
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@gmail.com", "your_app_password")
+    server.send_message(msg)
+🟦 PYTHON SOLUTION 3 — Send Email With Attachment
+python
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+msg = MIMEMultipart()
+msg["From"] = "you@gmail.com"
+msg["To"] = "friend@example.com"
+msg["Subject"] = "Email with Attachment"
+
+msg.attach(MIMEText("Please find the attachment."))
+
+file = "report.pdf"
+with open(file, "rb") as f:
+    part = MIMEBase("application", "octet-stream")
+    part.set_payload(f.read())
+    encoders.encode_base64(part)
+    part.add_header("Content-Disposition", f"attachment; filename={file}")
+    msg.attach(part)
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@gmail.com", "your_app_password")
+    server.send_message(msg)
+🟦 PYTHON SOLUTION 4 — Modular Email Sender (Reusable Function)
+python
+import smtplib
+from email.mime.text import MIMEText
+
+def send_email(to, subject, body):
+    msg = MIMEText(body)
+    msg["From"] = "you@gmail.com"
+    msg["To"] = to
+    msg["Subject"] = subject
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login("you@gmail.com", "your_app_password")
+        server.send_message(msg)
+
+send_email("friend@example.com", "Hello", "This is a test email.")
+🟦 PYTHON SOLUTION 5 — Using Outlook SMTP
+python
+import smtplib
+from email.mime.text import MIMEText
+
+msg = MIMEText("Hello from Outlook SMTP!")
+msg["Subject"] = "Outlook Test"
+msg["From"] = "you@outlook.com"
+msg["To"] = "friend@example.com"
+
+with smtplib.SMTP("smtp.office365.com", 587) as server:
+    server.starttls()
+    server.login("you@outlook.com", "your_password")
+    server.send_message(msg)
+🟦 PYTHON SOLUTION 6 — Send Email to Multiple Recipients
+python
+import smtplib
+from email.mime.text import MIMEText
+
+recipients = ["a@example.com", "b@example.com", "c@example.com"]
+
+msg = MIMEText("Hello everyone!")
+msg["Subject"] = "Group Email"
+msg["From"] = "you@gmail.com"
+msg["To"] = ", ".join(recipients)
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@gmail.com", "your_app_password")
+    server.send_message(msg)
+🟦 PYTHON SOLUTION 7 — Email With CC & BCC
+python
+import smtplib
+from email.mime.text import MIMEText
+
+msg = MIMEText("Email with CC and BCC")
+msg["Subject"] = "CC/BCC Test"
+msg["From"] = "you@gmail.com"
+msg["To"] = "friend@example.com"
+msg["Cc"] = "ccperson@example.com"
+
+recipients = ["friend@example.com", "ccperson@example.com", "hidden@example.com"]
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login("you@gmail.com", "your_app_password")
+    server.send_message(msg, to_addrs=recipients)
+🟧 SQL & PL/SQL SOLUTION PACK
+SQL cannot send emails.
+PL/SQL can send emails using UTL_MAIL or UTL_SMTP.
+
+🟥 PL/SQL SOLUTION 1 — Send Simple Email (UTL_MAIL)
+sql
+BEGIN
+  UTL_MAIL.send(
+    sender     => 'you@example.com',
+    recipients => 'friend@example.com',
+    subject    => 'Test Email',
+    message    => 'Hello from PL/SQL!'
+  );
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Send HTML Email
+sql
+BEGIN
+  UTL_MAIL.send(
+    sender     => 'you@example.com',
+    recipients => 'friend@example.com',
+    subject    => 'HTML Email',
+    message    => '<h2>Hello Anu!</h2><p>This is an HTML email.</p>',
+    mime_type  => 'text/html'
+  );
+END;
+/
+🟥 PL/SQL SOLUTION 3 — Send Email Using UTL_SMTP (Low‑Level Control)
+sql
+DECLARE
+  conn UTL_SMTP.connection;
+BEGIN
+  conn := UTL_SMTP.open_connection('smtp.example.com', 25);
+  UTL_SMTP.helo(conn, 'example.com');
+  UTL_SMTP.mail(conn, 'you@example.com');
+  UTL_SMTP.rcpt(conn, 'friend@example.com');
+
+  UTL_SMTP.open_data(conn);
+  UTL_SMTP.write_data(conn, 'Subject: Test Email' || CHR(13));
+  UTL_SMTP.write_data(conn, 'Hello from UTL_SMTP!' || CHR(13));
+  UTL_SMTP.close_data(conn);
+
+  UTL_SMTP.quit(conn);
+END;
+/
+
+📊 AUTOMATION SCRIPT PACK — PROCESS CSV & EXCEL
+🟦 PYTHON SOLUTION 1 — Read CSV Using pandas
+python
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+print(df.head())
+🟦 PYTHON SOLUTION 2 — Write CSV Using pandas
+python
+import pandas as pd
+
+df = pd.DataFrame({"name": ["Anu", "Jyoti"], "age": [25, 30]})
+df.to_csv("output.csv", index=False)
+🟦 PYTHON SOLUTION 3 — Read Excel Using pandas
+python
+import pandas as pd
+
+df = pd.read_excel("data.xlsx", sheet_name="Sheet1")
+print(df)
+🟦 PYTHON SOLUTION 4 — Write Excel Using pandas
+python
+import pandas as pd
+
+df = pd.DataFrame({"A": [1, 2], "B": [3, 4]})
+df.to_excel("output.xlsx", index=False)
+🟦 PYTHON SOLUTION 5 — Process CSV Row‑By‑Row (csv module)
+python
+import csv
+
+with open("data.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row["name"], row["age"])
+🟦 PYTHON SOLUTION 6 — Write CSV Row‑By‑Row
+python
+import csv
+
+rows = [
+    {"name": "Anu", "age": 25},
+    {"name": "Jyoti", "age": 30}
+]
+
+with open("output.csv", "w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "age"])
+    writer.writeheader()
+    writer.writerows(rows)
+🟦 PYTHON SOLUTION 7 — Process Excel Using openpyxl
+python
+from openpyxl import load_workbook
+
+wb = load_workbook("data.xlsx")
+ws = wb.active
+
+for row in ws.iter_rows(values_only=True):
+    print(row)
+🟦 PYTHON SOLUTION 8 — Modify Excel Using openpyxl
+python
+from openpyxl import Workbook
+
+wb = Workbook()
+ws = wb.active
+
+ws.append(["Name", "Age"])
+ws.append(["Anu", 25])
+
+wb.save("output.xlsx")
+🟦 PYTHON SOLUTION 9 — Convert CSV → Excel
+python
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+df.to_excel("converted.xlsx", index=False)
+🟦 PYTHON SOLUTION 10 — Convert Excel → CSV
+python
+import pandas as pd
+
+df = pd.read_excel("data.xlsx")
+df.to_csv("converted.csv", index=False)
+🟦 PYTHON SOLUTION 11 — Filter & Transform Data
+python
+import pandas as pd
+
+df = pd.read_csv("sales.csv")
+df["total"] = df["price"] * df["qty"]
+df[df["total"] > 100].to_csv("filtered.csv", index=False)
+🟦 PYTHON SOLUTION 12 — Merge Multiple CSV Files
+python
+import pandas as pd
+import glob
+
+files = glob.glob("data/*.csv")
+df = pd.concat((pd.read_csv(f) for f in files))
+df.to_csv("merged.csv", index=False)
+🟧 SQL SOLUTION PACK — PROCESS CSV
+SQL cannot read CSV directly, but databases can load CSV into tables.
+
+🟧 SQL SOLUTION 1 — Load CSV Using External Table (Oracle)
+sql
+CREATE TABLE sales_ext (
+  id NUMBER,
+  price NUMBER,
+  qty NUMBER
+)
+ORGANIZATION EXTERNAL (
+  TYPE ORACLE_LOADER
+  DEFAULT DIRECTORY data_dir
+  ACCESS PARAMETERS (
+    RECORDS DELIMITED BY NEWLINE
+    FIELDS TERMINATED BY ','
+  )
+  LOCATION ('sales.csv')
+);
+🟧 SQL SOLUTION 2 — Query CSV Like a Table
+sql
+SELECT id, price, qty, price * qty AS total
+FROM sales_ext;
+🟧 SQL SOLUTION 3 — Insert CSV Data Into Real Table
+sql
+INSERT INTO sales (id, price, qty)
+SELECT id, price, qty FROM sales_ext;
+🟥 PL/SQL SOLUTION PACK — PROCESS CSV/EXCEL
+PL/SQL cannot read Excel directly, but can process:
+
+External tables
+
+CSV loaded into tables
+
+CLOB/BLOB file contents
+
+🟥 PL/SQL SOLUTION 1 — Process CSV Rows
+sql
+DECLARE
+  CURSOR c IS SELECT id, price, qty FROM sales_ext;
+BEGIN
+  FOR r IN c LOOP
+    DBMS_OUTPUT.PUT_LINE('Total: ' || (r.price * r.qty));
+  END LOOP;
+END;
+/
+🟥 PL/SQL SOLUTION 2 — Insert Processed Data Into Another Table
+sql
+BEGIN
+  INSERT INTO sales_summary (id, total)
+  SELECT id, price * qty FROM sales_ext;
+END;
+/
+🟥 PL/SQL SOLUTION 3 — Generate CSV Output (UTL_FILE)
+sql
+DECLARE
+  f UTL_FILE.file_type;
+BEGIN
+  f := UTL_FILE.fopen('DATA_DIR', 'output.csv', 'w');
+
+  FOR r IN (SELECT id, price, qty FROM sales) LOOP
+    UTL_FILE.put_line(f, r.id || ',' || r.price || ',' || r.qty);
+  END LOOP;
+
+  UTL_FILE.fclose(f);
+END;
+/
+
+ Scrape Websites: Advanced Automation Pack, in the same modular, reusable style as your other packs.
+
+🕷️ Overview
+Python (multiple advanced patterns):
+
+Robust requests + BeautifulSoup
+
+Pagination, search, filters
+
+Login sessions, cookies, headers
+
+Proxies, retries, backoff
+
+Selenium for JS sites
+
+Async scraping (concurrent)
+
+Save to CSV/Excel/DB
+
+SQL / PL/SQL:
+
+UTL_HTTP + basic parsing
+
+Store HTML/JSON into tables
+
+🟦 PYTHON — Solution 1: Robust Scraper With Headers + Retry
+python
+import requests
+from bs4 import BeautifulSoup
+from time import sleep
+
+HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+def fetch(url, retries=3):
+    for i in range(retries):
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=10)
+            r.raise_for_status()
+            return r.text
+        except Exception as e:
+            print("Error:", e, "Retry:", i + 1)
+            sleep(2)
+    return None
+
+html = fetch("https://example.com")
+if html:
+    soup = BeautifulSoup(html, "html.parser")
+    print(soup.title.text)
+🟦 PYTHON — Solution 2: Pagination Scraper (Multiple Pages)
+python
+import requests
+from bs4 import BeautifulSoup
+
+BASE_URL = "https://example.com/products?page={}"
+
+for page in range(1, 6):
+    url = BASE_URL.format(page)
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "html.parser")
+
+    print("Page:", page)
+    for item in soup.select(".product-title"):
+        print(item.get_text(strip=True))
+🟦 PYTHON — Solution 3: Login Session + Authenticated Scraping
+python
+import requests
+from bs4 import BeautifulSoup
+
+login_url = "https://example.com/login"
+target_url = "https://example.com/dashboard"
+
+with requests.Session() as s:
+    payload = {"username": "anu", "password": "secret"}
+    s.post(login_url, data=payload)
+
+    html = s.get(target_url).text
+    soup = BeautifulSoup(html, "html.parser")
+    print(soup.title.text)
+🟦 PYTHON — Solution 4: Scrape With Proxies
+python
+import requests
+
+proxies = {
+    "http": "http://user:pass@proxy:8080",
+    "https": "http://user:pass@proxy:8080",
+}
+
+r = requests.get("https://example.com", proxies=proxies, timeout=10)
+print(r.status_code)
+🟦 PYTHON — Solution 5: Selenium for Dynamic Content
+python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Chrome(options=options)
+
+driver.get("https://example.com")
+titles = driver.find_elements("css selector", ".product-title")
+
+for t in titles:
+    print(t.text)
+
+driver.quit()
+🟦 PYTHON — Solution 6: Async Scraping With aiohttp + asyncio
+python
+import asyncio
+import aiohttp
+from bs4 import BeautifulSoup
+
+urls = [f"https://example.com/page/{i}" for i in range(1, 6)]
+
+async def fetch(session, url):
+    async with session.get(url) as resp:
+        return await resp.text()
+
+async def main():
+    async with aiohttp.ClientSession() as session:
+        html_list = await asyncio.gather(*(fetch(session, u) for u in urls))
+        for html in html_list:
+            soup = BeautifulSoup(html, "html.parser")
+            print(soup.title.text)
+
+asyncio.run(main())
+🟦 PYTHON — Solution 7: Scrape + Save to CSV
+python
+import requests, csv
+from bs4 import BeautifulSoup
+
+url = "https://example.com/products"
+soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+with open("products.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["name", "price"])
+
+    for item in soup.select(".product"):
+        name = item.select_one(".product-title").get_text(strip=True)
+        price = item.select_one(".price").get_text(strip=True)
+        writer.writerow([name, price])
+🟦 PYTHON — Solution 8: Scrape + Save to SQLite
+python
+import requests, sqlite3
+from bs4 import BeautifulSoup
+
+con = sqlite3.connect("scrape.db")
+cur = con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS products(name TEXT, price TEXT)")
+
+soup = BeautifulSoup(requests.get("https://example.com/products").text, "html.parser")
+
+for item in soup.select(".product"):
+    name = item.select_one(".product-title").get_text(strip=True)
+    price = item.select_one(".price").get_text(strip=True)
+    cur.execute("INSERT INTO products VALUES(?, ?)", (name, price))
+
+con.commit()
+con.close()
+🟦 PYTHON — Solution 9: Respect Robots.txt (Polite Scraping Skeleton)
+python
+import requests
+from urllib.robotparser import RobotFileParser
+
+rp = RobotFileParser()
+rp.set_url("https://example.com/robots.txt")
+rp.read()
+
+url = "https://example.com/products"
+if rp.can_fetch("*", url):
+    html = requests.get(url).text
+    print("Allowed, length:", len(html))
+else:
+    print("Not allowed by robots.txt")
+🟥 PL/SQL — Solution 1: Fetch HTML With UTL_HTTP
+sql
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  line VARCHAR2(4000);
+BEGIN
+  req := UTL_HTTP.begin_request('https://example.com');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, line, TRUE);
+    DBMS_OUTPUT.PUT_LINE(line);
+  END LOOP;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL — Solution 2: Store Scraped HTML in a Table
+sql
+CREATE TABLE scraped_pages (
+  url     VARCHAR2(500),
+  content CLOB
+);
+sql
+DECLARE
+  req  UTL_HTTP.req;
+  resp UTL_HTTP.resp;
+  buffer VARCHAR2(4000);
+  full CLOB := EMPTY_CLOB();
+BEGIN
+  req := UTL_HTTP.begin_request('https://example.com');
+  resp := UTL_HTTP.get_response(req);
+
+  LOOP
+    UTL_HTTP.read_line(resp, buffer, TRUE);
+    full := full || buffer || CHR(10);
+  END LOOP;
+
+  INSERT INTO scraped_pages(url, content) VALUES ('https://example.com', full);
+  COMMIT;
+
+  UTL_HTTP.end_response(resp);
+END;
+/
+🟥 PL/SQL — Solution 3: Very Simple Tag Extraction
+sql
+DECLARE
+  html CLOB;
+  s NUMBER;
+  e NUMBER;
+  title VARCHAR2(500);
+BEGIN
+  SELECT content INTO html FROM scraped_pages WHERE ROWNUM = 1;
+
+  s := INSTR(html, '<title>') + 7;
+  e := INSTR(html, '</title>');
+  title := SUBSTR(html, s, e - s);
+
+  DBMS_OUTPUT.PUT_LINE('Title: ' || title);
+END;
+/
+
+build you a Full ETL Pipeline Pack plus multi‑file project structures you can reuse for almost anything (interviews, real projects, 100‑days).
+
+1. Full ETL pipeline pack — multiple source codes
+I’ll give you several ETL variants:
+
+CSV → Transform → DB
+
+API → Transform → DB
+
+CSV → Transform → Excel
+
+DB → Transform → DB (SQL/PLSQL)
+
+🟦 Python ETL 1 — CSV → Transform → SQLite
+python
+# etl_csv_to_sqlite.py
+import pandas as pd
+import sqlite3
+
+def extract(csv_path):
+    return pd.read_csv(csv_path)
+
+def transform(df):
+    df["total"] = df["price"] * df["qty"]
+    return df[df["total"] > 100]
+
+def load(df, db_path="etl.db", table="sales"):
+    con = sqlite3.connect(db_path)
+    df.to_sql(table, con, if_exists="replace", index=False)
+    con.close()
+
+if __name__ == "__main__":
+    df = extract("sales.csv")
+    df_t = transform(df)
+    load(df_t)
+🟦 Python ETL 2 — API → Transform → SQLite
+python
+# etl_api_to_sqlite.py
+import requests
+import pandas as pd
+import sqlite3
+
+def extract(url):
+    return requests.get(url).json()
+
+def transform(data):
+    df = pd.DataFrame(data)
+    return df[["id", "title"]]
+
+def load(df, db_path="api.db", table="posts"):
+    con = sqlite3.connect(db_path)
+    df.to_sql(table, con, if_exists="replace", index=False)
+    con.close()
+
+if __name__ == "__main__":
+    data = extract("https://jsonplaceholder.typicode.com/posts")
+    df = transform(data)
+    load(df)
+🟦 Python ETL 3 — CSV → Transform → Excel
+python
+# etl_csv_to_excel.py
+import pandas as pd
+
+def extract(path):
+    return pd.read_csv(path)
+
+def transform(df):
+    df["full_name"] = df["first_name"] + " " + df["last_name"]
+    return df[["full_name", "email"]]
+
+def load(df, out_path):
+    df.to_excel(out_path, index=False)
+
+if __name__ == "__main__":
+    df = extract("users.csv")
+    df_t = transform(df)
+    load(df_t, "users_clean.xlsx")
+🟦 Python ETL 4 — DB → Transform → DB (SQLite → SQLite)
+python
+# etl_db_to_db.py
+import sqlite3
+import pandas as pd
+
+def extract(db_path, query):
+    con = sqlite3.connect(db_path)
+    df = pd.read_sql_query(query, con)
+    con.close()
+    return df
+
+def transform(df):
+    df["total"] = df["price"] * df["qty"]
+    return df
+
+def load(df, db_path, table):
+    con = sqlite3.connect(db_path)
+    df.to_sql(table, con, if_exists="replace", index=False)
+    con.close()
+
+if __name__ == "__main__":
+    df = extract("etl.db", "SELECT * FROM sales")
+    df_t = transform(df)
+    load(df_t, "etl.db", "sales_enriched")
+🟧 SQL ETL 1 — Staging CSV (External Table) → Clean Table
+sql
+-- External staging table
+CREATE TABLE sales_ext (
+  id    NUMBER,
+  price NUMBER,
+  qty   NUMBER
+)
+ORGANIZATION EXTERNAL (
+  TYPE ORACLE_LOADER
+  DEFAULT DIRECTORY data_dir
+  ACCESS PARAMETERS (
+    RECORDS DELIMITED BY NEWLINE
+    FIELDS TERMINATED BY ','
+  )
+  LOCATION ('sales.csv')
+);
+
+-- Target table
+CREATE TABLE sales_clean (
+  id    NUMBER,
+  price NUMBER,
+  qty   NUMBER,
+  total NUMBER
+);
+
+-- Transform + Load
+INSERT INTO sales_clean (id, price, qty, total)
+SELECT id, price, qty, price * qty
+FROM sales_ext
+WHERE price * qty > 100;
+🟥 PL/SQL ETL 1 — Row‑by‑Row Transform & Load
+sql
+DECLARE
+  CURSOR c IS SELECT id, price, qty FROM sales_ext;
+BEGIN
+  FOR r IN c LOOP
+    INSERT INTO sales_clean (id, price, qty, total)
+    VALUES (r.id, r.price, r.qty, r.price * r.qty);
+  END LOOP;
+  COMMIT;
+END;
+/
+🟥 PL/SQL ETL 2 — ETL Procedure
+sql
+CREATE OR REPLACE PROCEDURE run_sales_etl AS
+BEGIN
+  INSERT INTO sales_clean (id, price, qty, total)
+  SELECT id, price, qty, price * qty
+  FROM sales_ext
+  WHERE price * qty > 100;
+
+  COMMIT;
+END;
+/
+
+BEGIN
+  run_sales_etl;
+END;
+/
+2. Multi‑file project structures — with sample code
+I’ll give you two reusable structures:
+
+ETL project structure
+
+Generic app structure (e.g., calculator / API / scraper)
+
+🗂️ Structure A — Full ETL project
+text
+etl_project/
+├─ etl/
+│  ├─ __init__.py
+│  ├─ extract.py
+│  ├─ transform.py
+│  ├─ load.py
+│  └─ config.py
+├─ scripts/
+│  ├─ run_csv_to_db.py
+│  ├─ run_api_to_db.py
+├─ tests/
+│  ├─ test_transform.py
+├─ data/
+│  ├─ input/
+│  └─ output/
+└─ requirements.txt
+etl/extract.py
+
+python
+import pandas as pd
+import requests
+
+def from_csv(path):
+    return pd.read_csv(path)
+
+def from_api(url):
+    return requests.get(url).json()
+etl/transform.py
+
+python
+import pandas as pd
+
+def add_total(df):
+    df["total"] = df["price"] * df["qty"]
+    return df
+
+def filter_high_value(df, threshold=100):
+    return df[df["total"] > threshold]
+etl/load.py
+
+python
+import sqlite3
+
+def to_sqlite(df, db_path, table):
+    con = sqlite3.connect(db_path)
+    df.to_sql(table, con, if_exists="replace", index=False)
+    con.close()
+scripts/run_csv_to_db.py
+
+python
+from etl.extract import from_csv
+from etl.transform import add_total, filter_high_value
+from etl.load import to_sqlite
+
+df = from_csv("data/input/sales.csv")
+df = add_total(df)
+df = filter_high_value(df, 100)
+to_sqlite(df, "data/output/etl.db", "sales_clean")
+🗂️ Structure B — Generic multi‑file app (e.g., calculator or API client)
+text
+app_project/
+├─ app/
+│  ├─ __init__.py
+│  ├─ core.py        # business logic
+│  ├─ models.py      # data models / DTOs
+│  ├─ services.py    # external services (API, DB)
+│  └─ utils.py       # helpers
+├─ cli/
+│  └─ main.py        # command-line entry
+├─ tests/
+│  └─ test_core.py
+└─ requirements.txt
+app/core.py (calculator example)
+
+python
+def add(a, b): return a + b
+def sub(a, b): return a - b
+def mul(a, b): return a * b
+def div(a, b): return a / b
+cli/main.py
+
+python
+from app.core import add, sub, mul, div
+
+def main():
+    a = float(input("A: "))
+    b = float(input("B: "))
+    op = input("Op (+ - * /): ")
+
+    ops = {"+": add, "-": sub, "*": mul, "/": div}
+    print(ops[op](a, b))
+
+if __name__ == "__main__":
+    main()
+
+Structuring the project
+
+I need to decide whether to combine the scraping and ETL frameworks into one repo or separate them. I’m leaning towards two repos for clarity, but I’ll need multiple source codes.
+
+For the unified scraping framework, I’ll create a folder called scraping_framework/ with a config.yaml, core modules, and example code.
+
+For the portfolio-ready structure, I might go with a mono-repo called data-automation-playground with subprojects.
+
+For the ETL layout, I’ll organize it into etl-pipelines/ with etl/, configs/, and scripts/.
+
+I’ll also show the config file and driver code for the ETL framework.
+
+1. Unified scraping framework (config‑driven)
+🗂️ Project layout
+text
+scraping-framework/
+├─ scraping/
+│  ├─ __init__.py
+│  ├─ config_loader.py
+│  ├─ fetch.py
+│  ├─ parse.py
+│  ├─ pipeline.py
+│  └─ outputs.py
+├─ configs/
+│  ├─ products_example.yaml
+│  └─ blog_example.yaml
+├─ scripts/
+│  └─ run_scraper.py
+├─ requirements.txt
+└─ README.md
+🧾 Example config (YAML)
+yaml
+# configs/products_example.yaml
+name: "products_scraper"
+base_url: "https://example.com"
+start_urls:
+  - "https://example.com/products?page=1"
+  - "https://example.com/products?page=2"
+
+headers:
+  User-Agent: "Mozilla/5.0"
+
+selectors:
+  item: ".product"
+  fields:
+    name: ".product-title"
+    price: ".price"
+
+output:
+  type: "csv"
+  path: "outputs/products.csv"
+🔧 Core pieces
+scraping/config_loader.py
+
+python
+import yaml
+
+def load_config(path):
+    with open(path) as f:
+        return yaml.safe_load(f)
+scraping/fetch.py
+
+python
+import requests
+
+def fetch(url, headers=None, timeout=10):
+    r = requests.get(url, headers=headers or {}, timeout=timeout)
+    r.raise_for_status()
+    return r.text
+scraping/parse.py
+
+python
+from bs4 import BeautifulSoup
+
+def parse_page(html, selectors):
+    soup = BeautifulSoup(html, "html.parser")
+    items = []
+    for node in soup.select(selectors["item"]):
+        row = {}
+        for field, css in selectors["fields"].items():
+            el = node.select_one(css)
+            row[field] = el.get_text(strip=True) if el else None
+        items.append(row)
+    return items
+scraping/outputs.py
+
+python
+import csv
+import os
+
+def write_csv(rows, path):
+    if not rows:
+        return
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+scraping/pipeline.py
+
+python
+from .fetch import fetch
+from .parse import parse_page
+from .outputs import write_csv
+
+def run_pipeline(config):
+    all_rows = []
+    for url in config["start_urls"]:
+        html = fetch(url, headers=config.get("headers"))
+        rows = parse_page(html, config["selectors"])
+        all_rows.extend(rows)
+
+    out = config["output"]
+    if out["type"] == "csv":
+        write_csv(all_rows, out["path"])
+scripts/run_scraper.py
+
+python
+from scraping.config_loader import load_config
+from scraping.pipeline import run_pipeline
+
+if __name__ == "__main__":
+    cfg = load_config("configs/products_example.yaml")
+    run_pipeline(cfg)
+2. Portfolio‑ready project structure (mono‑repo)
+text
+data-automation-playground/
+├─ scraping-framework/        # from section 1
+├─ etl-framework/             # from sections 3–4
+├─ mini-projects/
+│  ├─ calculator/
+│  ├─ todo-app/
+│  ├─ password-generator/
+│  └─ games/
+├─ docs/
+│  ├─ scraping.md
+│  ├─ etl.md
+│  └─ projects.md
+└─ README.md
+Each subfolder is self‑contained and runnable, but the top‑level README tells your story: “I build reusable frameworks, not just scripts.”
+
+3. Turn the ETL pack into a GitHub‑ready portfolio repo layout
+🗂️ ETL repo layout
+text
+etl-framework/
+├─ etl/
+│  ├─ __init__.py
+│  ├─ extract.py
+│  ├─ transform.py
+│  ├─ load.py
+│  └─ config_loader.py
+├─ configs/
+│  ├─ csv_to_db_sales.yaml
+│  ├─ api_to_db_posts.yaml
+│  └─ csv_to_excel_users.yaml
+├─ scripts/
+│  ├─ run_etl.py
+├─ data/
+│  ├─ input/
+│  └─ output/
+├─ tests/
+│  └─ test_transform.py
+├─ requirements.txt
+└─ README.md
+4. Unified config‑driven ETL framework (YAML/JSON‑based)
+🧾 Example ETL config (YAML)
+yaml
+# configs/csv_to_db_sales.yaml
+name: "sales_csv_to_sqlite"
+extract:
+  type: "csv"
+  path: "data/input/sales.csv"
+
+transform:
+  steps:
+    - add_total:
+        price_col: "price"
+        qty_col: "qty"
+        out_col: "total"
+    - filter:
+        column: "total"
+        op: ">"
+        value: 100
+
+load:
+  type: "sqlite"
+  db_path: "data/output/etl.db"
+  table: "sales_clean"
+  if_exists: "replace"
+🔧 Core ETL modules
+etl/config_loader.py
+
+python
+import yaml
+
+def load_config(path):
+    with open(path) as f:
+        return yaml.safe_load(f)
+etl/extract.py
+
+python
+import pandas as pd
+import requests
+
+def extract(cfg):
+    etype = cfg["type"]
+    if etype == "csv":
+        return pd.read_csv(cfg["path"])
+    if etype == "api":
+        data = requests.get(cfg["url"]).json()
+        return pd.DataFrame(data)
+    raise ValueError(f"Unknown extract type: {etype}")
+etl/transform.py
+
+python
+def apply_steps(df, steps):
+    for step in steps:
+        name, params = next(iter(step.items()))
+        if name == "add_total":
+            df[params["out_col"]] = df[params["price_col"]] * df[params["qty_col"]]
+        elif name == "filter":
+            col = params["column"]
+            val = params["value"]
+            op  = params["op"]
+            if op == ">":
+                df = df[df[col] > val]
+            elif op == ">=":
+                df = df[df[col] >= val]
+            elif op == "<":
+                df = df[df[col] < val]
+            elif op == "==":
+                df = df[df[col] == val]
+        # add more transforms as needed
+    return df
+etl/load.py
+
+python
+import sqlite3
+
+def load(df, cfg):
+    ltype = cfg["type"]
+    if ltype == "sqlite":
+        con = sqlite3.connect(cfg["db_path"])
+        df.to_sql(cfg["table"], con, if_exists=cfg.get("if_exists", "append"), index=False)
+        con.close()
+    elif ltype == "csv":
+        df.to_csv(cfg["path"], index=False)
+    elif ltype == "excel":
+        df.to_excel(cfg["path"], index=False)
+    else:
+        raise ValueError(f"Unknown load type: {ltype}")
+scripts/run_etl.py
+
+python
+from etl.config_loader import load_config
+from etl.extract import extract
+from etl.transform import apply_steps
+from etl.load import load
+
+if __name__ == "__main__":
+    cfg = load_config("configs/csv_to_db_sales.yaml")
+
+    df = extract(cfg["extract"])
+    df = apply_steps(df, cfg["transform"]["steps"])
+    load(df, cfg["load"])
+
+Scraping Framework and ETL Framework and upgrade them into:
+
+Logging + error‑handled frameworks
+
+Unit tests for transform functions
+
+Portfolio‑ready README snippets you can paste directly into GitHub
+
+Everything stays modular, clean, and production‑style — exactly the way you build systems.
+
+✅ 1. Add Logging + Error Handling (Scraping + ETL Frameworks)
+Below are drop‑in modules you can paste into your existing project.
+
+🕷️ A. Logging + Error Handling for Scraping Framework
+scraping/logger.py
+python
+import logging
+import os
+
+def get_logger(name="scraper"):
+    os.makedirs("logs", exist_ok=True)
+    logging.basicConfig(
+        filename="logs/scraper.log",
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s"
+    )
+    return logging.getLogger(name)
+scraping/fetch.py (updated with logging + retries)
+python
+import requests
+from time import sleep
+from .logger import get_logger
+
+logger = get_logger("fetch")
+
+def fetch(url, headers=None, retries=3, timeout=10):
+    for attempt in range(1, retries + 1):
+        try:
+            logger.info(f"Fetching URL: {url}")
+            r = requests.get(url, headers=headers or {}, timeout=timeout)
+            r.raise_for_status()
+            return r.text
+        except Exception as e:
+            logger.error(f"Attempt {attempt} failed for {url}: {e}")
+            sleep(2)
+    logger.critical(f"Failed to fetch URL after {retries} attempts: {url}")
+    return None
+scraping/pipeline.py (updated)
+python
+from .fetch import fetch
+from .parse import parse_page
+from .outputs import write_csv
+from .logger import get_logger
+
+logger = get_logger("pipeline")
+
+def run_pipeline(config):
+    logger.info(f"Starting scraper: {config['name']}")
+    all_rows = []
+
+    for url in config["start_urls"]:
+        html = fetch(url, headers=config.get("headers"))
+        if not html:
+            logger.error(f"Skipping URL due to fetch failure: {url}")
+            continue
+
+        try:
+            rows = parse_page(html, config["selectors"])
+            all_rows.extend(rows)
+            logger.info(f"Parsed {len(rows)} rows from {url}")
+        except Exception as e:
+            logger.error(f"Parsing failed for {url}: {e}")
+
+    out = config["output"]
+    write_csv(all_rows, out["path"])
+    logger.info(f"Scraper completed. Total rows: {len(all_rows)}")
+🧱 B. Logging + Error Handling for ETL Framework
+etl/logger.py
+python
+import logging
+import os
+
+def get_logger(name="etl"):
+    os.makedirs("logs", exist_ok=True)
+    logging.basicConfig(
+        filename="logs/etl.log",
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s"
+    )
+    return logging.getLogger(name)
+etl/extract.py (updated)
+python
+import pandas as pd
+import requests
+from .logger import get_logger
+
+logger = get_logger("extract")
+
+def extract(cfg):
+    try:
+        etype = cfg["type"]
+        logger.info(f"Extracting using type: {etype}")
+
+        if etype == "csv":
+            return pd.read_csv(cfg["path"])
+
+        if etype == "api":
+            data = requests.get(cfg["url"]).json()
+            return pd.DataFrame(data)
+
+        raise ValueError(f"Unknown extract type: {etype}")
+
+    except Exception as e:
+        logger.error(f"Extraction failed: {e}")
+        raise
+etl/transform.py (updated)
+python
+from .logger import get_logger
+
+logger = get_logger("transform")
+
+def apply_steps(df, steps):
+    for step in steps:
+        name, params = next(iter(step.items()))
+        logger.info(f"Applying transform: {name}")
+
+        try:
+            if name == "add_total":
+                df[params["out_col"]] = df[params["price_col"]] * df[params["qty_col"]]
+
+            elif name == "filter":
+                col = params["column"]
+                val = params["value"]
+                op  = params["op"]
+
+                if op == ">":
+                    df = df[df[col] > val]
+                elif op == ">=":
+                    df = df[df[col] >= val]
+                elif op == "<":
+                    df = df[df[col] < val]
+                elif op == "==":
+                    df = df[df[col] == val]
+
+        except Exception as e:
+            logger.error(f"Transform '{name}' failed: {e}")
+            raise
+
+    return df
+🧪 2. Unit Tests for Transform Functions
+🗂️ tests/test_transform.py
+python
+import pandas as pd
+from etl.transform import apply_steps
+
+def test_add_total():
+    df = pd.DataFrame({"price": [10], "qty": [2]})
+    steps = [{"add_total": {"price_col": "price", "qty_col": "qty", "out_col": "total"}}]
+
+    result = apply_steps(df, steps)
+    assert result["total"].iloc[0] == 20
+
+def test_filter():
+    df = pd.DataFrame({"total": [50, 200]})
+    steps = [{"filter": {"column": "total", "op": ">", "value": 100}}]
+
+    result = apply_steps(df, steps)
+    assert len(result) == 1
+    assert result["total"].iloc[0] == 200
+📘 3. README Snippets (Paste directly into GitHub)
+Here are polished, portfolio‑ready descriptions.
+
+📘 README — Unified Scraping Framework
+markdown
+# Unified Scraping Framework (Config‑Driven)
+
+A reusable, configuration‑driven web scraping framework built with Python.
+Define your scraper in a YAML file — no code changes required.
+
+## Features
+- Config‑driven (YAML)
+- Automatic retries + error handling
+- Logging to `logs/scraper.log`
+- CSS‑selector based extraction
+- CSV output
+- Modular architecture (fetch → parse → pipeline)
+
+## Run a scraper
+```bash
+python scripts/run_scraper.py --config configs/products_example.yaml
+Folder Structure
+Code
+scraping-framework/
+├─ scraping/
+├─ configs/
+├─ scripts/
+├─ logs/
+└─ outputs/
+Code
+
+---
+
+## 📘 README — Unified ETL Framework
+
+```markdown
+# Unified ETL Framework (Config‑Driven)
+
+A production‑style ETL framework that supports CSV, API, Excel, and SQLite.
+All ETL logic is defined in YAML configs — no code changes required.
+
+## Features
+- Config‑driven ETL (YAML)
+- Extract from CSV or API
+- Transform using reusable steps
+- Load into SQLite, CSV, or Excel
+- Logging + error handling
+- Unit tests included
+
+## Run ETL
+```bash
+python scripts/run_etl.py --config configs/csv_to_db_sales.yaml
+Folder Structure
+Code
+etl-framework/
+├─ etl/
+├─ configs/
+├─ scripts/
+├─ data/
+├─ logs/
+└─ tests/
+Code
+
+---
+
+## 📘 README — Data Automation Playground (Mono‑Repo)
+
+```markdown
+# Data Automation Playground
+
+A portfolio of reusable automation frameworks:
+- Config‑driven scraping framework
+- Config‑driven ETL framework
+- Mini‑projects (calculator, to‑do app, password generator)
+- Games (Snake, Pong)
+
+This repo demonstrates:
+- Modular architecture
+- Reusable pipelines
+- Clean code practices
+- Logging, error handling, and testing
